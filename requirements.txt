@@ -1,5 +1,4 @@
 alembic==1.11.1
-python-3.11.5
 blinker==1.6.2
 certifi==2023.7.22
 charset-normalizer==3.2.0
