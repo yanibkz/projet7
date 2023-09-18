@@ -181,4 +181,8 @@ def home():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+    # Spécifiez le numéro de port
+    port = int(os.environ.get('PORT', 5003))
+
+    # Lancez l'application en écoutant sur le port spécifié
+    app.run(host='0.0.0.0', port=port)
