@@ -227,7 +227,7 @@ if __name__ == '__main__':
                 f.write(uploaded_file.read())
 
             response = requests.post(
-                'http://localhost:5000/import',
+                'https://projet7op-954d4e3f556b.herokuapp.com/import',
                 files={'file': open("temp_file.csv", "rb")}
             )
 
