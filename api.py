@@ -7,7 +7,6 @@ matplotlib.use('Agg')
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
-import shap
 import seaborn as sns
 
 
@@ -21,8 +20,7 @@ initial_df.drop(['TARGET'], axis=1, inplace=True)
 scaler = StandardScaler()
 scaled_initial_data = scaler.fit_transform(initial_df.drop('SK_ID_CURR', axis=1))
 
-# Initialisez le calculateur SHAP avec l'ensemble de données complet
-explainer = shap.Explainer(model.named_steps['estimator'], scaled_initial_data)
+
 
 best_threshold = 0.6873417721518987
 current_df = initial_df
@@ -104,17 +102,6 @@ def features_plot():
     plt.savefig('feature_importance.png')
 
     return send_file('feature_importance.png', mimetype='image/png')
-
-# Initialisez le calculateur SHAP une fois.
-explainer = shap.Explainer(model.named_steps['estimator'], scaled_initial_data[:100])
-
-
-
-
-
-
-
-
 
 
 @app.route('/distribution-plots/<int:sk_id>/<string:column>', methods=['GET'])
