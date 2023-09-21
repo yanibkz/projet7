@@ -8,6 +8,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 import seaborn as sns
+import shap
 
 
 import io
@@ -25,6 +26,46 @@ scaled_initial_data = scaler.fit_transform(initial_df.drop('SK_ID_CURR', axis=1)
 best_threshold = 0.6873417721518987
 current_df = initial_df
 
+
+# Initialisez le calculateur SHAP avec l'ensemble de données complet
+explainer = shap.Explainer(model.named_steps['estimator'], scaled_initial_data)
+
+
+@app.route('/shap_plot/<int:client_id>', methods=['GET'])
+def shap_plot(client_id):
+    try:
+        # Filtrer le DataFrame pour obtenir les données pour le client_id spécifique
+        filtered_df = initial_df[initial_df['SK_ID_CURR'] == client_id]
+
+        if filtered_df.empty:
+            return jsonify({"error": "SK_ID_CURR not found"}), 404
+
+        # Conserver les noms de colonnes
+        column_names = filtered_df.drop('SK_ID_CURR', axis=1).columns.tolist()
+
+        # Mettre à l'échelle les données
+        scaled_data = scaler.transform(filtered_df.drop('SK_ID_CURR', axis=1))
+
+        # Convertir le tableau NumPy en DataFrame pour conserver les noms de colonnes
+        scaled_data_df = pd.DataFrame(scaled_data, columns=column_names)
+
+        # Calculer les valeurs SHAP
+        shap_values = explainer(scaled_data)
+
+        # Tampon pour enregistrer l'image
+        buf = io.BytesIO()
+        plt.figure()
+
+        # Création et sauvegarde du graphique des valeurs SHAP avec les noms de colonnes
+        shap.summary_plot(shap_values.values, scaled_data_df, show=False)
+        plt.savefig(buf, format='png')
+        buf.seek(0)
+
+        return send_file(buf, mimetype='image/png')
+
+    except Exception as e:
+        print(f"An error occurred: {e}")  # Log d'erreur
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/import', methods=['POST'])
 def import_df():
