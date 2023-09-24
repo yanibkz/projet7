@@ -3,34 +3,35 @@ name: Python Tests
 on:
   push:
     branches:
-      - 'main'
+      - main
   pull_request:
     branches:
-      - 'main'
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
+    - name: Checkout Code
+      uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.x
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'  # Spécifiez ici la version de Python que vous souhaitez utiliser.
 
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pytest flask pandas
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest flask pandas  # Ajout de Flask et pandas
 
-      - name: Check CSV File
-        run: |
-          if [ ! -f df_final.csv ]; then
-            echo "df_final.csv not found, downloading..."
-            # Add commands to download the CSV file if necessary
-          fi
+    - name: Check CSV File
+      run: |
+        if [ ! -f df_final.csv ]; then
+          echo "df_final.csv not found, downloading..."
+          # Ajoutez des commandes pour télécharger le fichier CSV si nécessaire
+        fi
 
-      - name: Run Tests
-        run: pytest
+    - name: Run Tests
+      run: pytest
