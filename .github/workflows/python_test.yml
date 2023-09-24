@@ -16,15 +16,15 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v2
 
-    - name: Set up Python 3.8
+    - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.8'  # Spécifiez ici la version de Python que vous souhaitez utiliser.
+        python-version: '3.8'  # Spécifiez une version compatible
 
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest flask pandas  # Ajout de Flask et pandas
+        pip install pytest flask pandas matplotlib  # Ajout de Matplotlib
 
     - name: Check CSV File
       run: |
