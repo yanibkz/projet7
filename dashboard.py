@@ -160,7 +160,7 @@ def credit_prediction_page(df):
 
     if st.button("Obtenir le graphique SHAP"):
         if st.session_state.sk_id is not None:  # Utilisation de l'ID client de la session
-            response = requests.get("https://projet7op-954d4e3f556b.herokuapp.com/shap_plot/{client_id}")
+            response = requests.get(f"https://projet7op-954d4e3f556b.herokuapp.com/shap_plot/{st.session_state.sk_id}")
 
             if response.status_code == 200:
                 st.image(response.content, caption="Graphique SHAP", use_column_width=True)
