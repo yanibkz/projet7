@@ -112,7 +112,7 @@ def credit_prediction_page(df):
     if st.button("Effectuer la prédiction"):
         try:
             st.session_state.sk_id = int(client_id)
-            prediction_response = requests.get('https://projet7op-954d4e3f556b.herokuapp.com/predict/{st.session_state.sk_id}')  # Correction ici
+            prediction_response = requests.get(f'https://projet7op-954d4e3f556b.herokuapp.com/predict/{st.session_state.sk_id}')
 
             if prediction_response.status_code == 200:
                 prediction_data = prediction_response.json()
