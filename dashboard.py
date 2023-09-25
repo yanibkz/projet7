@@ -201,48 +201,38 @@ selected_columns = [
     'SK_ID_CURR'
 ]
 
+# Initialisation de l'état de session si nécessaire
+if 'authenticated' not in st.session_state:
+    st.session_state.authenticated = False
+
 # Code principal de l'application Streamlit
 if __name__ == '__main__':
 
+    # Affiche le formulaire d'authentification seulement si l'utilisateur n'est pas authentifié
+    if not st.session_state.authenticated:
+        col1, col2, col3 = st.columns([1, 2, 1])
 
-    # Authentification au milieu de la page
-    col1, col2, col3 = st.columns([1,2,1])
+        with col2:
+            st.header("Connexion")
+            user = st.text_input("Identifiant")
+            password = st.text_input("Mot de passe", type="password")
 
-    with col2:
-        st.header("Connexion")
-        user = st.text_input("Identifiant")
-        password = st.text_input("Mot de passe", type="password")
+        if user == "yani" and password == "azerty":
+            st.session_state.authenticated = True
+    else:
+        if st.button("Déconnecter"):
+            st.session_state.authenticated = False
 
-    if user == "yani" and password == "azerty":
+    # Si l'utilisateur est authentifié, affiche le contenu principal de l'application
+    if st.session_state.authenticated:
         initial_df = pd.read_csv('df_final.csv')
 
         app_mode = st.sidebar.selectbox(
             "Sélectionnez un onglet :", ["Information Client", "Prédiction de Crédit"])
 
-        uploaded_file = st.sidebar.file_uploader(
-            "Choisissez un fichier CSV", type=["csv"])
 
-        if uploaded_file is not None:
-            with open("temp_file.csv", "wb") as f:
-                f.write(uploaded_file.read())
 
-            response = requests.post(
-                'https://projet7op-954d4e3f556b.herokuapp.com/import',
-                files={'file': open("temp_file.csv", "rb")}
-            )
-
-            if response.status_code == 200:
-                try:
-                    print("API Response:", response.json())
-                except json.JSONDecodeError:
-                    print("La réponse n'est pas au format JSON:", response.text)
-            else:
-                print("Erreur API:", response.status_code)
-
-            df = pd.read_csv("temp_file.csv")
-
-        else:
-            df = initial_df
+        df = initial_df  # On utilise le DataFrame initial à la place
 
         if app_mode == "Information Client":
             information_client_page(df)
