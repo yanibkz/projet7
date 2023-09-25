@@ -36,7 +36,7 @@ def plot_feature_importance(df):
     st.write("### Importance des features")
 
     # Faites une requête à votre API pour obtenir les coefficients
-    response = requests.get('https://projet7op-954d4e3f556b.herokuapp.com/')
+    response = requests.get('https://projet7op-954d4e3f556b.herokuapp.com/features')
     if response.status_code == 200:
         data = response.json()
         df_coef = json_normalize(data)  # Convertir le JSON en DataFrame
@@ -112,7 +112,7 @@ def credit_prediction_page(df):
     if st.button("Effectuer la prédiction"):
         try:
             st.session_state.sk_id = int(client_id)
-            prediction_response = requests.get(f'https://projet7op-954d4e3f556b.herokuapp.com/{st.session_state.sk_id}')  # Correction ici
+            prediction_response = requests.get('https://projet7op-954d4e3f556b.herokuapp.com/{st.session_state.sk_id}')  # Correction ici
 
             if prediction_response.status_code == 200:
                 prediction_data = prediction_response.json()
@@ -160,7 +160,7 @@ def credit_prediction_page(df):
 
     if st.button("Obtenir le graphique SHAP"):
         if st.session_state.sk_id is not None:  # Utilisation de l'ID client de la session
-            response = requests.get(f'https://projet7op-954d4e3f556b.herokuapp.com/{st.session_state.sk_id}')  # Correction ici
+            response = requests.get("https://projet7op-954d4e3f556b.herokuapp.com/shap_plot/{client_id}")
 
             if response.status_code == 200:
                 st.image(response.content, caption="Graphique SHAP", use_column_width=True)
@@ -169,7 +169,7 @@ def credit_prediction_page(df):
 
 
 def get_prediction(sk_id):
-    response = requests.get(f'https://projet7op-954d4e3f556b.herokuapp.com/{sk_id}')
+    response = requests.get('https://projet7op-954d4e3f556b.herokuapp.com/{sk_id}')
     print("API Response:", response.json())  # Ajout d'un print pour déboguer
     if response.status_code == 200:
         return response.json()[0]['Prediction']
@@ -227,7 +227,7 @@ if __name__ == '__main__':
                 f.write(uploaded_file.read())
 
             response = requests.post(
-                'https://projet7op-954d4e3f556b.herokuapp.com/',
+                'https://projet7op-954d4e3f556b.herokuapp.com/import',
                 files={'file': open("temp_file.csv", "rb")}
             )
 
